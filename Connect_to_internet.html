@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WiFi Credentials</title>
+    <script>
+        var socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+        function submitForm() {
+            
+           // event.preventDefault(); // Prevent form submission
+
+            // Get the entered values
+            var ssid = document.getElementById("wifiName").value;
+            socket.send('SSID' + ssid);
+            var password = document.getElementById("wifiPassword").value;
+            socket.send('Password' + password);
+            // Create an HTTP request
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("POST", "/microcontroller-endpoint", true);
+            // xhr.setRequestHeader("Content-Type", "application/json");
+
+            // // Send the entered values as JSON
+            // var data = JSON.stringify({ wifiName: wifiName, wifiPassword: wifiPassword });
+            // xhr.send(data);
+
+            // Optional: Show a success message or perform other actions
+            alert("WiFi credentials sent to microcontroller!");
+        }
+    </script>
+</head>
+<body>
+    <h1>Enter WiFi Credentials</h1>
+    <form >
+        <label for="wifiName">WiFi Name:</form>/label>
+        <input type="text" id="wifiName" name="wifiName" required><br><br>
+        
+        <label for="wifiPassword">WiFi Password:</label>
+        <input type="password" id="wifiPassword" name="wifiPassword" required><br><br>
+        <button ontouchend="submitForm()" onclick="submitForm()">Connect</button>
+        <!-- <input type="submit" value="Connect"> -->
+    </form>
+</body>
+</html>

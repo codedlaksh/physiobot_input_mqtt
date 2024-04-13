@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Physiobot Control</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+
+</head>
+<header>
+    <h1>Physiobot</h1>
+</header>
+    <body>
+
+        <nav>
+            <button class="wifi_button"><a href="Connect_to_internet.html">wifi</a></button>
+        </nav>
+        <div class="container">
+            <div class="jog">
+                
+                    
+                <div class="teaching">
+                    <h2 style="text-align: center; color: black;">Setup</h2>
+                  
+                               
+                <div class="current_pos1" >
+                    <label for="current_pos1">Current Angle:</label>
+                    <input type="number" id="current_pos"  placeholder="0">
+                </div>
+                <div class="jogging_buttons">
+                    <button class="button " ontouchstart="buttonDown(1)" ontouchend="buttonUp(1)"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Jog
+                        Down</button>
+                    <button class="button" ontouchstart="buttonDown(2)" ontouchend="buttonUp(2)"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Jog
+                        Up</button>
+                </div>
+                    <div class="start_pos_teaching">
+                        <label for="startPos">Start Angle :</label>
+                        <input type="text" id="startPos" name="startPos" value="0">
+                        <button class="button" onclick="storeStartPos()"
+                            style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Store
+                            Start Position</button>
+                    </div>
+
+                    <div class="stop_pos_teaching">
+                        <label for="stop_Pos">Stop Angle:</label>
+                        <input type="text" id="stopPos"  value="0">
+                        <button class="button" onclick="storeStopPos()"
+                            style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Store
+                            Stop Position</button>
+                    </div>
+                <!-- </div>-->
+                <div class="speed"> 
+                    <button class="button" ontouchend="increaseSpeed()"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Increase
+                        Speed</button>
+                    <input type="text" id="speed"  value="0 ">
+                    <button class="button" ontouchend="decreaseSpeed()"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Decrease
+                        Speed</button>
+                </div> 
+                <div class="count">
+                    <label for="count">Repititions:</label>
+                    <input type="text" id="count"  value="0">
+                    <!-- <button class="button" onclick="storeCount()"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Store
+                        Repititions</button> -->
+                        
+
+                    </div>
+            
+               
+
+            </div>
+            
+           
+        </div>
+        <div class="rom">
+            <div class = "session">
+                <button class="button_start" onclick="startSession()"
+                    style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; background-color: chartreuse;">Start
+                    Session</button>
+                    <!-- <div class="progress-container">
+                        <div class="progressbar">
+                        <span style="width:60%"></span>
+                        </div> 
+                        </div>-->
+                        <input type="range" min="0" max="100" value="0" class="slider" id="myRange">s
+                <button class="button_stop" onclick="stopSession()" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">Stop Session</button>
+                
+            </div>
+        </div>
+        <button class="pres"><a href="prescription.html">Prescribtion</a></button>
+         </div>  
+          
+
+
+           
+
+
+    </body>
+    <script>
+
+        var socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+
+        function buttonDown(btn) {
+            if (btn === 1) {
+                socket.send('down1');
+            } else if (btn === 2) {
+                socket.send('down2');
+            }
+        }
+
+        function buttonUp(btn) {
+            if (btn === 1) {
+                socket.send('up1');
+            } else if (btn === 2) {
+                socket.send('up2');
+            }
+        }
+
+        function increaseSpeed() {
+            socket.send('inc_speed');
+        }
+
+        function decreaseSpeed() {
+            socket.send('dec_speed');
+        }
+
+        function storeStartPos() {
+            // var startPos = document.getElementById("startPos").value;
+            socket.send('store_start_pos');
+        }
+
+        function storeStopPos() {
+            // var stopPos = document.getElementById("stopPos").value;
+            socket.send('store_stop_pos');
+        }
+
+        function storeSpeed() {
+            // var speed = document.getElementById("speed").value;
+            socket.send('store_speed');
+        }
+
+        function storeCount() {
+            // var count = document.getElementById("count").value;
+            socket.send('store_count');
+        }
+
+        function startSession() {
+            socket.send('start_session');
+        }
+
+        function stopSession() {
+            socket.send('stop_session');
+        }
+        socket.onmessage = function(event) {
+            console.log(event.data);
+            var message = event.data;
+            var splitPoint = message.indexOf(':');
+            if (splitPoint > -1) {
+                var key = message.substring(0, splitPoint);
+                var value = message.substring(splitPoint + 1);
+                if(key == 'motorPosition1'){
+                    document.getElementById('current_pos').value = value;
+                }else if(key == 'motorPosition2'){
+                    document.getElementById('startPos').value = value;
+                }
+                else if(key == 'motorPosition3'){
+                    document.getElementById('stopPos').value = value;
+                }
+                else if(key == 'motorPosition4'){
+                    document.getElementById('speed').value = value;
+                }
+                else if(key == 'motorPosition5'){
+                    document.getElementById('speed').value = value;
+                }
+                else if(key == 'motorPosition6'){
+                    document.getElementById('count').value = value;
+                }
+                
+                
+            }
+        }
+        
+        // var splitPoint = message.indexOf(':');
+        // if (splitPoint > -1) {
+        //     // var key = message.substring(0, splitPoint);
+        //     var value = message.substring(splitPoint + 1);
+            // var inputField = document.getElementById("current_pos");
+            // if (inputField) {
+            //     inputField.value = message;  // Displaying the value in microseconds
+            // }
+        // }
+    
+    
+
+    </script>
+
+</html>

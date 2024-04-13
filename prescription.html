@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prescribe</title>
+    <link rel="stylesheet" href="styles.css">
+    
+  </head> 
+
+<body>
+    <header>
+        <h1>Physiobot</h1>
+
+    </header>
+
+    <main>
+        <div class="py-5 text-center">
+            <div class="container">
+                <!-- <div class="row">
+                    <div class="mx-auto col-lg-5 col-md-7 col-10"> -->
+                        <div class="row">
+                            <label for="name">Patient Name:</label>
+                            <input type="name" class="form-control" id="input40" placeholder="Aden">
+                        </div>
+               <div class="row">
+                <label for="name">Prescribe Start Pos:</label>
+                <input type="name" class="form-control" id="input41" placeholder="5°">
+               </div>
+                <div class="row">
+                    <label for="name">Prescribe Stop Pos:</label>
+                    <input type="name" class="form-control" id="input42" placeholder="25°">
+                </div>
+               <div class="row">
+                <label for="name">Prescribe Count:</label>
+                <input type="name" class="form-control" id="input43" placeholder="15">
+               </div>
+                <!-- <div class="row">
+                    <label for="name">Prescribe Extra Up Pos</label>
+                    <input type="name" class="form-control" id="form16" placeholder="0°">
+                </div>
+                <div class="row">
+                    <label for="name">Prescribe Extra Down Pos</label>
+                    <input type="name" class="form-control" id="form16" placeholder="2°">
+                </div> -->
+               
+                
+               
+
+                    
+                   
+            
+        </div>
+        <button ID="getPrescrib" style="background: rgb(22, 27, 27); border-color: black;color:aliceblue ;margin-left: 45%; border-radius: 10px; font-weight: bolder; " >Get Prescribtion</button>
+        </div>
+       
+
+    </main>
+</body>
+    <script >
+        document.getElementById('getPrescrib').addEventListener('click', function() {
+        var socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+        socket.send('get_prescrip');
+        socket.onmessage = function(event) {
+            console.log(event.data);
+            var message = event.data;
+            var splitPoint = message.indexOf(':');
+            if (splitPoint > -1) {
+                var key = message.substring(0, splitPoint);
+                var value = message.substring(splitPoint + 1);
+                if(key == 'data1'){
+                    document.getElementById('input40').value = value;
+                }else if(key == 'data2'){
+                    document.getElementById('input41').value = value;
+                }
+                else if(key == 'data3'){
+                    document.getElementById('input42').value = value;
+                }
+                else if(key == 'data4'){
+                    document.getElementById('input43').value = value;
+                }
+                
+                
+                
+            }
+        }
+    });
+
+
+</script>
+</html>
